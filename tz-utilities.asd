@@ -7,12 +7,13 @@
   :license  "Specify license here"
   :version "0.1"
   :serial t
-  :depends-on (cz.zellerin.doc)
+  :depends-on (cz.zellerin.doc let-over-lambda cl-store local-time journal)
   :components ((:file "package")
                (:file "tz-utilities")
 	       (:file "named")
 	       (:file "authinfo")
-	       (:file "cached-vars"))
+	       (:file "cached-vars")
+	       (:file "anaphoric"))
   :in-order-to ((test-op (test-op "tz-utilities/test"))))
 
 (asdf:defsystem #:tz-utilities/test
