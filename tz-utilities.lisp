@@ -38,7 +38,7 @@ FIXME: this must be in some standard library, but I can't find it."
   ...
   ;;; some long calculation to update *A-VARIABLE*
   ...
-  (save-value \"foo\")"
+  (save-value *A-VARIABLE* \"foo\")"
   (save-value)
   (load-value)
   (*default-cache-path* variable))
@@ -54,15 +54,20 @@ FIXME: this must be in some standard library, but I can't find it."
 								       "-" ,@local-time:+iso-8601-date-format+ ".store"))))
   (values))
 
-
 (defun load-value (base-name &key (cache-path *default-cache-path*))
   "Load value keyed by BASE-NAME from the most recent file (by name) in cache."
   (let* ((most-recent-dump (car
 			    (sort
 			     (directory
 			      (format nil "~a~a*.store" cache-path base-name))
-			     #'string<
+			     #'string>
 			     :key #'pathname-name))))
     (when (null most-recent-dump)
       (warn "No dump file for ~a in ~a" base-name cache-path))
     (and most-recent-dump (cl-store:restore most-recent-dump))))
+
+(defmacro define-loaded-var (var-name (save-identifier &key default cache-name)
+			     &optional documentation)
+  `(progn
+     (defvar ,var-name (or (load-value ,save-identifier) ,default) ,documentation)
+     (setf (get ',var-name 'save-name) ,save-identifier)))
