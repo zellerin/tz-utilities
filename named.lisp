@@ -3,7 +3,7 @@
 (defvar *cntr* 0
   "Counter for naming unnamed instances.")
 
-(export-classes ()
+(export-classes (:slots)
   (defclass named ()
     ((name :accessor get-name :initarg :name
 	   :initform (let ((name (format nil "Unnamed instance #~x" (incf *cntr*))))
