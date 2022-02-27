@@ -6,9 +6,7 @@
 Three operations on alists when they are used as key-value DB need to be defined:
 - getting the value for key or nil (assocd),
 - updating value for the key, unconditionally (update-alist)
-- getting the value and updating it if it does not exist (get-or-update-alist)
-
-In general, all operations involve finding the affected cons, so "
+- getting the value and updating it if it does not exist (get-or-update-alist)"
   (assocd) (assocd-for)
   (clist-to-llist)
   (get-or-update-alist)
@@ -129,7 +127,7 @@ FIXME: this must be in some standard library, but I can't find it."
       (warn "No dump file for ~a in ~a" base-name cache-path))
     (and most-recent-dump (cl-store:restore most-recent-dump))))
 
-(defmacro define-loaded-var (var-name (save-identifier &key default cache-name)
+(defmacro define-loaded-var (var-name (save-identifier &key default)
 			     &optional documentation)
   `(progn
      (defvar ,var-name (or (load-value ,save-identifier) ,default) ,documentation)
