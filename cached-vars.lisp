@@ -44,8 +44,9 @@
        (setf (getf *cached-vals* ',name) ,internal-struct
 	     (cache-initializer ,internal-struct) (lambda () ,value)
 	     (cache-value ,internal-struct) ,internal-struct )
-       (define-symbol-macro ,name
-	   (read-cached ,internal-struct)))))
+       (eval-when (:load-toplevel :compile-toplevel)
+	 (define-symbol-macro ,name
+	     (read-cached ,internal-struct))))))
 
 (defun read-cached (struct)
   "If VAL is a delayed value, evaluate it and remember and return result.
