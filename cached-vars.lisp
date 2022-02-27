@@ -5,7 +5,7 @@
   dynamically - the initialing form is stored at load time, and evaluated when the form is used.
 
   The \"variable\" symbol is expanded to a form \"(read-cached symbol)\" "
-  (define-cached-var macro))
+  (define-cached-var))
 
 (defstruct (cache
 	    (:print-object (lambda (object stream)
