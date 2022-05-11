@@ -120,7 +120,7 @@ FIXME: this must be in some standard library, but I can't find it."
   (let* ((most-recent-dump (car
 			    (sort
 			     (directory
-			      (format nil "~a~a*.store" cache-path base-name))
+			      (format nil "~a~a-????-??-??.store" cache-path base-name))
 			     #'string>
 			     :key #'pathname-name))))
     (when (null most-recent-dump)
