@@ -7,7 +7,7 @@
   :license  "Specify license here"
   :version "0.1"
   :serial t
-  :depends-on (cz.zellerin.doc let-over-lambda cl-store local-time journal)
+  :depends-on (cz.zellerin.doc let-over-lambda cl-store local-time journal secret-service)
   :components ((:file "package")
                (:file "tz-utilities")
 	       (:file "named")

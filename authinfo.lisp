@@ -13,7 +13,13 @@
 
 Currently, backend is a cache and the .authinfo file(s)."
   (restart-case
-    (or (gethash (cons machine username) *authinfo-cache*)
+   (or (gethash (cons machine username) *authinfo-cache*)
+       (let ((from-ss (secret-service:find-the-secret `(("machine" ,machine)
+                                                                 ("login" ,username)))))
+         (when from-ss
+           (setf (gethash (cons machine username) *authinfo-cache*)
+                 (secret-service:stringify-secret from-ss))
+           (return-from get-authinfo from-ss)))
       (with-open-file (in *authinfo-file*)
 	(loop for line = (read-line in nil)
 	      while line
