@@ -13,7 +13,8 @@
 	       (:file "named")
 	       (:file "authinfo")
 	       (:file "cached-vars")
-	       (:file "anaphoric"))
+	       (:file "anaphoric")
+               (:file "time"))
   :in-order-to ((test-op (test-op "tz-utilities/test"))))
 
 (asdf:defsystem #:tz-utilities/test
