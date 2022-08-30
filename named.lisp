@@ -1,7 +1,7 @@
 (in-package tz-utilities)
 
 (define-section @named-objects
-  ""
+  "Define a mixin NAMED that streamlines creating \"printable\" named class instances."
   (make-json-object))
 
 (defvar *cntr* 0
