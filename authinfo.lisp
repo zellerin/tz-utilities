@@ -36,8 +36,7 @@ Two backends are in place: authinfo files, and secret service API."
                  (secret-service:find-the-secret `(("machine" ,machine)
                                                    ,@ (when username
                                                         `(("login" ,username)))))
-               (values (secret-service:secret-item-search-error ())
-                 from-ss))))
+               (secret-service:secret-item-search-error ()))))
        (when from-ss
          (secret-service:stringify-secret from-ss))))))
 
