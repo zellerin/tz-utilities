@@ -1,11 +1,16 @@
 (in-package #:tz-utilities)
 
 (define-section @cached-vars
-  "To prevent long loading times, allow varibles to be initialized
-  dynamically - the initialing form is stored at load time, and evaluated when the form is used.
+  "To prevent long loading times, allow variables to be initialized dynamically -
+the initialing form is stored at load time, and evaluated when the form is
+used.
 
-  The \"variable\" symbol is expanded to a form \"(read-cached symbol)\" "
-  (define-cached-var))
+The \"variable\" symbol is expanded to a form \"(read-cached symbol)\".
+
+Not that the illusion of VAR being really variable breaks when it is used in a
+LET form. This turns out to be quite a serious problem."
+  (define-cached-var macro)
+  (forget-cached))
 
 (defstruct (cache
 	    (:print-object (lambda (object stream)
@@ -67,6 +72,8 @@ Otherwise, return the value directly."
   (setf (cache-value object) value))
 
 (defun forget-cached (visible-name)
+  "Forget value of cached variable, if it was already evaluated. This causes
+re-evaluation next time it is used."
   (let ((struct (find-cached-by-symbol visible-name)))
     (unless struct
       (error "Cannot forget cached value for ~a - does not exist" visible-name))

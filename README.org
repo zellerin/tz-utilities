@@ -5,6 +5,8 @@ The package contains utilities that I needed in multiple projects that
 - I did not find in public repositories and
 - are so small that they do not deserve separate package/repository
 
+Not cleaned up and tested, so probably will not work for you as-is.
+
 ** Named objects
 #+BEGIN: lisp-fns-doc :section tz-utilities::@named-objects :package tz-utilities
 Class NAMED streamlines creating "printable" named class instances.
@@ -83,6 +85,7 @@ Two backends are in place: authinfo files, and secret service API.
 #+END:
 
 ** Alists as a DB
+
 #+BEGIN: lisp-fns-doc :section tz-utilities::@alist-utilities :package tz-utilities
 Add-hoc utilities for alist management.
 
@@ -133,6 +136,97 @@ Three operations on alists when they are used as key-value DB need to be defined
    Set value for KEY in modified alist to NEW-VALUE
 
    Lambda list: #:PLACE KEY NEW-VALUE &REST TEST-PARS
+
+
+#+END:
+
+** Random stuff
+#+BEGIN: lisp-fns-doc :section tz-utilities::@anaphoric :package tz-utilities
+Anaphoric macros not defined in the lol package
+
+- =AWHEN= (function)
+   Evaluate TEST-FORM, and if true, evaluate BODY with symbol IT bound to its
+   value.
+
+   Lambda list: TEST-FORM &BODY BODY
+
+
+#+END:
+
+#+BEGIN: lisp-fns-doc :section tz-utilities::@debugger-hooks :package tz-utilities
+MAKE-CASCADED-DEBUGGER-HOOK is used to add additional handler cases for current repl.
+
+This is probably not good idea to use and fully experimental.
+
+- =MAKE-CASCADED-DEBUGGER-HOOK= (function)
+   A function suitable for the debugger hook that checks CASES (same format as in
+    handler-case) and if none matches, runs whatever was the hook when it was called.
+
+   Usage:
+   : (setq *debugger-hook*
+   :    (make-cascaded-debugger-hook '((simple-error continue)))))
+
+   Lambda list: CASES
+
+
+#+END:
+
+
+** Cached variables
+#+BEGIN: lisp-fns-doc :section tz-utilities::@cached-vars :package tz-utilities
+To prevent long loading times, allow variables to be initialized dynamically -
+the initialing form is stored at load time, and evaluated when the form is
+used.
+
+The "variable" symbol is expanded to a form "(read-cached symbol)".
+
+Not that the illusion of VAR being really variable breaks when it is used in a
+LET form. This turns out to be quite a serious problem.
+
+- =DEFINE-CACHED-VAR= (macro)
+   Define NAME as a symbol that is evaluated to VALUE first time it is used.
+
+   Lambda list: NAME VALUE &OPTIONAL COMMENT
+
+- =FORGET-CACHED= (function)
+
+   Lambda list: VISIBLE-NAME
+
+
+#+END:
+
+** Persistent storage for variables
+#+BEGIN: lisp-fns-doc :section tz-utilities::@save-load :package tz-utilities
+To preserve relatively stable data across run of the system, the
+actual values of the variables can be saved and then loaded on
+startup (or anytime else).
+
+The data are saved to a define directory with names created from the
+provided string and timestamp; loading is done from the most recent
+(based on name) file.
+
+The background mechanism for storing is cl-store.
+
+Typical sequence is
+
+: (defvar *A-VARIABLE* (load-value "foo"))
+...
+: ;;; some long calculation to update *A-VARIABLE*
+...
+: (save-value *A-VARIABLE* "foo")
+
+- =SAVE-VALUE= (function)
+   Store value to a timestamped storage in cache.
+
+   Lambda list: VALUE BASE-NAME &KEY (CACHE-PATH *DEFAULT-CACHE-PATH*)
+
+- =LOAD-VALUE= (function)
+   Load value keyed by BASE-NAME from the most recent file (by name) in cache.
+
+   Lambda list: BASE-NAME &KEY (CACHE-PATH *DEFAULT-CACHE-PATH*)
+
+- =*DEFAULT-CACHE-PATH*= (variable)
+   Default directory to save the variable values.
 
 
 #+END:
