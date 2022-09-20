@@ -14,7 +14,7 @@
 
 (defun tomorrow (&optional (n 0) (base (now)))
   "Timestamp of Nth day in future (0 being tomorrow) 00:00."
-  (let ((result base))
+  (let ((result (local-time::clone-timestamp base)))
     (setf (sec-of result) 0)
     (setf (nsec-of result) 0)
     (incf (day-of result) (1+ n))

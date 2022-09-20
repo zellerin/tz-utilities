@@ -73,3 +73,23 @@
   (signals error (forget-cached (gensym)))
   (setf foo 12)
   (is (equal 12 foo)))
+
+
+(named-readtables:in-readtable :local-time)
+
+(deftest test-tomorrow ()
+  (is (local-time:timestamp= @2022-09-21T02:00:00.000000+02:00
+                             (tomorrow 0 @2022-09-20T09:47:13.415673+02:00)))
+  (is (local-time:timestamp= @2022-09-21T00:00:00.000000Z
+                               (tomorrow 0 @2022-09-20T09:47:13.415673Z)))
+  (is (local-time:timestamp= @2022-09-24T02:00:00.000000+02:00
+                             (tomorrow 3 @2022-09-20T09:47:13.415673+02:00))))
+
+(deftest test-org-time ()
+  (is (string-equal (local-time:format-timestring
+               nil @2022-09-20T09:47:13.415673Z
+               :format tz-utilities:*org-time-format*
+               :timezone local-time:+utc-zone+)
+              "2022-09-20 09:47 Tue")))
+
+(named-readtables:in-readtable nil)
