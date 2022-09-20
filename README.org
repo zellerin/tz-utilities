@@ -24,6 +24,7 @@ alists obtained from cl-json:decode-json calls
 - =GET-NAME= (generic-fn)
    Name of the object. If it is named object, value of the NAME slot, otherwise
    object itself (suitable for strings, numbers, etc.)
+
    Lambda list: ~OBJECT~
 
 - =NO-NAME= (condition)
@@ -40,6 +41,7 @@ alists obtained from cl-json:decode-json calls
    Make instance of an object backed by an alist. Typically, sets name based on
    the value associated with NAME-KEYWORD, but another function to extract name can
    be specified with NAMED-FN.
+
    Lambda list: ~JSON~ ~CLASS~ ~&KEY~ ~(NAME-KEYWORD :NAME)~
                 ~(NAME-FN (ASSOCD-FOR NAME-KEYWORD))~
 
@@ -63,7 +65,7 @@ Two backends are in place: authinfo files, and secret service API.
 
    Raise condition SECRET-NOT-FOUND if relevant secret is not found; it has established restart USE-VALUE
 
-   Lambda list: ~MACHINE USERNAME~
+   Lambda list: ~MACHINE~ ~USERNAME~
 
 - =GET-AUTHINFO-BOTH= (function)
    Get user and secret for MACHINE.
@@ -96,12 +98,12 @@ Three operations on alists when they are used as key-value DB need to be defined
    Convenience shortcut for (cdr (assoc ...)), also known as alist-get in elisp.
    FIXME: this must be in some standard library, but I can't find it.
 
-   Lambda list: ~ITEM ALIST &REST PARS~
+   Lambda list: ~ITEM~ ~ALIST~ ~&REST~ ~PARS~
 
 - =ASSOCD-FOR= (function)
    Function of one parameter (an alist) that extracts KEY from that alist
 
-   Lambda list: ~KEY &REST PARS~
+   Lambda list: ~KEY~ ~&REST~ ~PARS~
 
 - =CLIST-TO-LLIST= (function)
    Convert list of conses (e.g., used by hunchentoot) to list of lists
@@ -113,8 +115,8 @@ Three operations on alists when they are used as key-value DB need to be defined
    Get value associated with KEY in the ALIST; if it is not present,
    update ALIST with KEY and evaluate NEW-VAL-CODE as new VALUE.
 
-   Lambda list: ~(ALIST KEY &REST ASSOC-PARS &KEY
-                  &ALLOW-OTHER-KEYS) &BODY NEW-VAL-CODE~
+   Lambda list: ~(ALIST KEY &REST ASSOC-PARS &KEY &ALLOW-OTHER-KEYS)~ ~&BODY~
+                ~NEW-VAL-CODE~
 
 - =WITH-SMALL-CACHE= (macro)
    Return body, or it cached value. Caching is done on current and
@@ -123,17 +125,17 @@ Three operations on alists when they are used as key-value DB need to be defined
 
    The cache is implemented as an alist, so should be small to keep efficiency.
 
-   Lambda list: ~(KEY &REST PARS-TEST) &BODY BODY~
+   Lambda list: ~(KEY &REST PARS-TEST)~ ~&BODY~ ~BODY~
 
 - =PRUNE-ALIST= (function)
    Remove duplicate entries from an alist.
 
-   Lambda list: ~ALIST TEST~
+   Lambda list: ~ALIST~ ~TEST~
 
 - =UPDATE-ALIST= (modify-macro)
    Set value for KEY in modified alist to NEW-VALUE
 
-   Lambda list: ~#:PLACE KEY NEW-VALUE &REST TEST-PARS~
+   Lambda list: ~#:PLACE~ ~KEY~ ~NEW-VALUE~ ~&REST~ ~TEST-PARS~
 
 
 #+END:
@@ -146,7 +148,7 @@ Anaphoric macros not defined in the lol package
    Evaluate TEST-FORM, and if true, evaluate BODY with symbol IT bound to its
    value.
 
-   Lambda list: ~TEST-FORM &BODY BODY~
+   Lambda list: ~TEST-FORM~ ~&BODY~ ~BODY~
 
 
 #+END:
@@ -169,6 +171,20 @@ This is probably not good idea to use and fully experimental.
 
 #+END:
 
+#+BEGIN: lisp-fns-doc :section tz-utilities::@time-tools :package tz-utilities
+Time related utilities. The baseline and convention is the LOCAL-TIME package.
+
+- =TOMORROW= (function)
+   Timestamp of Nth day in future (0 being tomorrow) 00:00.
+
+   Lambda list: ~&OPTIONAL~ ~(N 0)~
+
+- =*ORG-TIME-FORMAT*= (variable)
+   Format of timestamp used by Org mode.
+
+
+#+END:
+
 
 ** Cached variables
 #+BEGIN: lisp-fns-doc :section tz-utilities::@cached-vars :package tz-utilities
@@ -184,7 +200,7 @@ LET form. This turns out to be quite a serious problem.
 - =DEFINE-CACHED-VAR= (macro)
    Define NAME as a symbol that is evaluated to VALUE first time it is used.
 
-   Lambda list: ~NAME VALUE &OPTIONAL COMMENT~
+   Lambda list: ~NAME~ ~VALUE~ ~&OPTIONAL~ ~COMMENT~
 
 - =FORGET-CACHED= (function)
 
@@ -208,20 +224,20 @@ The background mechanism for storing is cl-store.
 Typical sequence is
 
 : (defvar *A-VARIABLE* (load-value "foo"))
-...
+: ...
 : ;;; some long calculation to update *A-VARIABLE*
-...
+: ...
 : (save-value *A-VARIABLE* "foo")
 
 - =SAVE-VALUE= (function)
    Store value to a timestamped storage in cache.
 
-   Lambda list: VALUE BASE-NAME &KEY (CACHE-PATH *DEFAULT-CACHE-PATH*)~
+   Lambda list: ~VALUE~ ~BASE-NAME~ ~&KEY~ ~(CACHE-PATH *DEFAULT-CACHE-PATH*)~
 
 - =LOAD-VALUE= (function)
    Load value keyed by BASE-NAME from the most recent file (by name) in cache.
 
-   Lambda list: ~BASE-NAME &KEY (CACHE-PATH *DEFAULT-CACHE-PATH*)~
+   Lambda list: ~BASE-NAME~ ~&KEY~ ~(CACHE-PATH *DEFAULT-CACHE-PATH*)~
 
 - =*DEFAULT-CACHE-PATH*= (variable)
    Default directory to save the variable values.

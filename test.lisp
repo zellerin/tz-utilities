@@ -47,7 +47,7 @@
     (is (equal "test-password" (get-authinfo "dummy" "api")))
     (signals simple-error (get-authinfo "dummy" "noone"))
     (signals simple-error (get-authinfo-both "dummy2"))
-    (is (gethash (cons  "dummy" "api") tz-utilities::*authinfo-cache*))
+    (is (gethash (cons  "dummy" "api") *authinfo-cache*))
     (is (get-authinfo-both "dummy"))
     (setq *authinfo-file* nil) ; test cache - it should not matter that file is nil
     (is (equal "test-password" (get-authinfo "dummy" "api")))
