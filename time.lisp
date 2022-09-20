@@ -13,5 +13,5 @@
     result))
 
 (defvar *org-time-format*
-  '(:year "-" (:month 2) "-" :day " " (:hour 2) ":" (:min 2) " " :short-weekday)
+  '(:year "-" (:month 2) "-" (:day 2) " " (:hour 2) ":" (:min 2) " " :short-weekday)
   "Format of time used by Org timestamps")
