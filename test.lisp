@@ -1,9 +1,9 @@
-(fiasco:define-test-package #:tz-utilities-alists
+(fiasco:define-test-package #:tz-utilities-tests
   (:use #:tz-utilities)
   (:import-from #:tz-utilities
                 #:*authinfo-file* #:*authinfo-cache*
                 #:forget-cached))
-(in-package #:tz-utilities-alists)
+(in-package #:tz-utilities-tests)
 
 
 ;;;; Named

@@ -20,5 +20,5 @@
 (asdf:defsystem #:tz-utilities/test
   :depends-on (tz-utilities fiasco)
   :perform (test-op (o s)
-                    (uiop:symbol-call :lisp-unit '#:run-tests :all 'tz-utilities))
+                    (uiop:symbol-call :fiasco '#:run-package-tests :package 'tz-utilities-tests))
   :components ((:file "test")))
