@@ -18,7 +18,7 @@
   :in-order-to ((test-op (test-op "tz-utilities/test"))))
 
 (asdf:defsystem #:tz-utilities/test
-  :depends-on (tz-utilities lisp-unit)
+  :depends-on (tz-utilities fiasco)
   :perform (test-op (o s)
                     (uiop:symbol-call :lisp-unit '#:run-tests :all 'tz-utilities))
   :components ((:file "test")))

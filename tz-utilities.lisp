@@ -9,10 +9,10 @@ Three operations on alists when they are used as key-value DB need to be defined
 - getting the value and updating it if it does not exist (get-or-update-alist)"
   (assocd) (assocd-for)
   (clist-to-llist)
-  (get-or-update-alist)
-  (with-small-cache)
+  (get-or-update-alist macro)
+  (with-small-cache macro)
   (prune-alist)
-  (update-alist))
+  (update-alist modify-macro))
 
 (defun get-or-acons-alist* (alist key new-val-fn assoc-pars)
   "Get value associated with KEY in ALIST, or create record for KEY with value being funcalled NEW-VAL-FN.
@@ -38,20 +38,14 @@ update ALIST with KEY and evaluate NEW-VAL-CODE as new VALUE."
     (cond (existing (setf (cdr existing) new-value) alist)
 	  (t (acons key new-value alist)))))
 
-(define-modify-macro update-alist (key new-value &rest test-pars) updated-alist)
-
-#+nil
-(let ((alist '((:a . 1)
-	       (:b . 2))))
-  (update-alist alist :a 3)
-  (update-alist alist :c 4)
-  alist)
+(define-modify-macro update-alist (key new-value &rest test-pars) updated-alist
+  "Set value for KEY in modified alist to NEW-VALUE")
 
 (defmacro with-small-cache ((key &rest pars-test) &body body)
   "Return body, or it cached value. Caching is done on current and
 cached KEYs being same; keyword parameters KEY and TEST can modify
 what same means.
-
+o
 The cache is implemented as an alist, so should be small to keep efficiency."
   `(let ((cache (load-time-value (cons nil nil))))
      (get-or-update-alist ((cdr cache) ,key ,@pars-test)
@@ -67,12 +61,12 @@ The cache is implemented as an alist, so should be small to keep efficiency."
 (declaim (inline assocd assocd-for))
 
 (defun assocd (item alist &rest pars)
-  "Convenience shortcut for (cdr (assoc ...)).
+  "Convenience shortcut for (cdr (assoc ...)), also known as alist-get in elisp.
 FIXME: this must be in some standard library, but I can't find it."
   (cdr (apply #'assoc item alist pars)))
 
 (defun assocd-for (key &rest pars)
-  "Return a function of one parameter (an alist) that extracts KEY from that parameter."
+  "Function of one parameter (an alist) that extracts KEY from that alist"
   (lambda (item) (apply #'assocd key item pars)))
 
 (defun clist-to-llist (object)
@@ -81,30 +75,30 @@ FIXME: this must be in some standard library, but I can't find it."
   (mapcar (lambda (a) (list (car a) (cdr a))) object))
 
 
-
 (define-section @save-load
   "To preserve relatively stable data across run of the system, the
-  actual values of the variables can be saved and then loaded on
-  startup (or anytime else).
+actual values of the variables can be saved and then loaded on
+startup (or anytime else).
 
-  The data are saved to a define directory with names created from the
-  provided string and timestamp; loading is done from the most recent
-  (based on name) file.
+The data are saved to a define directory with names created from the
+provided string and timestamp; loading is done from the most recent
+(based on name) file.
 
-  The background mechanism for storing is cl-store.
+The background mechanism for storing is cl-store.
 
-  Typical sequence is
+Typical sequence is
 
-  (defvar *A-VARIABLE* (load-value \"foo\"))
-  ...
-  ;;; some long calculation to update *A-VARIABLE*
-  ...
-  (save-value *A-VARIABLE* \"foo\")"
+: (defvar *A-VARIABLE* (load-value \"foo\"))
+: ...
+: ;;; some long calculation to update *A-VARIABLE*
+: ...
+: (save-value *A-VARIABLE* \"foo\")"
   (save-value)
   (load-value)
   (*default-cache-path* variable))
 
-(defvar *default-cache-path* "~/.cache/lisp/")
+(defvar *default-cache-path* "~/.cache/lisp/"
+  "Default directory to save the variable values.")
 
 (defun save-value (value base-name &key (cache-path *default-cache-path*))
   "Store value to a timestamped storage in cache."
@@ -133,16 +127,19 @@ FIXME: this must be in some standard library, but I can't find it."
      (defvar ,var-name (or (load-value ,save-identifier) ,default) ,documentation)
      (setf (get ',var-name 'save-name) ,save-identifier)))
 
-(define-section debugger-hooks
-  "MAKE-CASCADED-DEBUGGER-HOOK is used to add additional handler cases for current repl."
+(define-section @debugger-hooks
+  "MAKE-CASCADED-DEBUGGER-HOOK is used to add additional handler cases for current repl.
+
+This is probably not good idea to use and fully experimental."
   (make-cascaded-debugger-hook))
 
 (defmacro make-cascaded-debugger-hook (cases)
-  "A debugger hook that checks cases and then runs whatever was the hook when it was called.
+  "A function suitable for the debugger hook that checks CASES (same format as in
+ handler-case) and if none matches, runs whatever was the hook when it was called.
 
-Special case: should err be symbol :previous, return previous *debugger-hook*.
-
-Usage: (setq *debugger-hook* (maybe-continue-fn *debugger-hook* '((simple-error) (continue))))) "
+Usage:
+: (setq *debugger-hook*
+:    (make-cascaded-debugger-hook '((simple-error continue)))))"
   (let* ((err-symbol (gensym "ERROR"))
 	 (old-hook-name (gensym "OLD"))
 	 (cases-code (mapcar (lambda (case) `(,(car case)
