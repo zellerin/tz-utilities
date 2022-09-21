@@ -1,7 +1,7 @@
 (fiasco:define-test-package #:tz-utilities-tests
   (:use #:tz-utilities)
   (:import-from #:tz-utilities
-                #:*authinfo-file* #:*authinfo-cache*
+                #:*authinfo-files* #:*authinfo-cache*
                 #:forget-cached))
 (in-package #:tz-utilities-tests)
 
@@ -42,19 +42,20 @@
   (let ((*authinfo-cache* (make-hash-table
                                          :test (hash-table-test
                                                 *authinfo-cache*)))
-	(*authinfo-file*
-	  (asdf:system-relative-pathname "tz-utilities" "tests/mock-authinfo")))
+	(*authinfo-files*
+	  (list (asdf:system-relative-pathname "tz-utilities" "tests/mock-authinfo"))))
     (is (equal "test-password" (get-authinfo "dummy" "api")))
-    (signals simple-error (get-authinfo "dummy" "noone"))
-    (signals simple-error (get-authinfo-both "dummy2"))
+    (signals secret-not-found (get-authinfo "dummy" "noone"))
+    (signals secret-not-found (get-authinfo-both "dummy2"))
     (is (gethash (cons  "dummy" "api") *authinfo-cache*))
-    (is (get-authinfo-both "dummy"))
-    (setq *authinfo-file* nil) ; test cache - it should not matter that file is nil
+    (is (equalp (get-authinfo-both "dummy")
+                '("api" "test-password")))
+    (setq *authinfo-files* nil) ; test cache - it should not matter that file is nil
     (is (equal "test-password" (get-authinfo "dummy" "api")))
     ;; catch type-error and set password
     (is (equal "added-password"
                (handler-bind
-                   ((type-error (lambda (err)
+                   ((secret-not-found (lambda (err)
                                   (declare (ignorable err))
                                   (invoke-restart 'use-value
                                                   "added-password"))))
@@ -75,7 +76,7 @@
   (is (equal 12 foo)))
 
 
-(named-readtables:in-readtable :local-time)
+(named-readtables:in-readtable local-time)
 
 (deftest test-tomorrow ()
   (is (local-time:timestamp= @2022-09-21T02:00:00.000000+02:00
