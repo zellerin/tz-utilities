@@ -18,6 +18,14 @@ alists obtained from cl-json:decode-json calls"
   (:documentation "Condition thrown when an object of class NAMED has no NAME specified at
 creation."))
 
+(defgeneric get-name (object)
+  (:documentation
+   "Name of the object. If it is named object, value of the NAME slot, otherwise
+object itself (suitable for strings, numbers, etc.)")
+  (:method (object)
+    "If we have nothing else, let name be object itself."
+    object))
+
 (export-classes (:slots)
   (defclass named ()
     ((name :accessor get-name :initarg :name
@@ -38,14 +46,6 @@ contains, among other, name/display name of the object.")))
 (defmethod print-object ((o named) stream)
   (print-unreadable-object (o stream :type t :identity nil)
     (princ (get-name o) stream)))
-
-(defgeneric get-name (object)
-  (:documentation
-   "Name of the object. If it is named object, value of the NAME slot, otherwise
-object itself (suitable for strings, numbers, etc.)")
-  (:method (object)
-    "If we have nothing else, let name be object itself."
-    object))
 
 (defun make-json-object (json class
 			 &key (name-keyword :name)
