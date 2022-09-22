@@ -10,6 +10,8 @@ git diff --cached |patch -p1 -d to-test
 set -x
 cd to-test
 sbcl --noinform --disable-ldb \
+     --eval '(asdf:load-asd "to-test/tz-utilities.asd")' \
      --eval "(ql:quickload 'tz-utilities/test)" \
      --eval '(in-package tz-utilities-tests)' \
-     --eval "(sb-ext:exit :abort (not (and (run-package-tests)(progn (ql:quickload 'tz-utilities/test/save-load)  (run-package-tests :package 'tz-utilities-tests-save-load)))))"
+     --eval "(sb-ext:exit :abort
+                (not (run-package-tests)))"

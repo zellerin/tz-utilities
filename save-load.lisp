@@ -27,7 +27,7 @@ Typical sequence is
 
 (defun save-value (value base-name &key (cache-path *default-cache-path*))
   "Store value to a timestamped storage in cache."
-  (cl-store:store value
+  (store value
 		  (ensure-directories-exist
 		   (local-time:format-timestring nil  (local-time:now)
 						 :format `(,cache-path ,base-name
@@ -44,7 +44,7 @@ Typical sequence is
 			     :key #'pathname-name))))
     (when (null most-recent-dump)
       (warn "No dump file for ~a in ~a" base-name cache-path))
-    (and most-recent-dump (cl-store:restore most-recent-dump))))
+    (and most-recent-dump (restore most-recent-dump))))
 
 (defmacro define-loaded-var (var-name (save-identifier &key default)
 			     &optional documentation)
