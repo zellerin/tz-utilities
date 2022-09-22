@@ -94,3 +94,12 @@
               "2022-09-20 09:47 Tue")))
 
 (named-readtables:in-readtable nil)
+
+;;;; awhen
+(deftest test-awhen ()
+  (is (= 5
+         (awhen (+ 1 2)
+           (incf it)
+           (+ 1 it))))
+  (is (null
+       (awhen nil 'foo 'bar 'baz))))
