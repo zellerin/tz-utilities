@@ -9,6 +9,9 @@
   :serial t
   :depends-on (cz.zellerin.doc let-over-lambda cl-store local-time journal secret-service)
   :components ((:file "package")
+               (:file "alists")
+               (:file "debugger")
+               (:file "save-load")
                (:file "tz-utilities")
 	       (:file "named")
 	       (:file "authinfo")
