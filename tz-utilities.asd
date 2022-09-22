@@ -7,12 +7,10 @@
   :license  "Specify license here"
   :version "0.1"
   :serial t
-  :depends-on (cz.zellerin.doc let-over-lambda cl-store local-time journal secret-service)
+  :depends-on (cz.zellerin.doc let-over-lambda local-time secret-service)
   :components ((:file "package")
                (:file "alists")
                (:file "debugger")
-               (:file "save-load")
-               (:file "tz-utilities")
 	       (:file "named")
 	       (:file "authinfo")
 	       (:file "cached-vars")
@@ -26,7 +24,7 @@
   :license  "Specify license here"
   :version "0.1"
   :serial t
-  :depends-on (tz-utilities)
+  :depends-on (tz-utilities cl-store)
   :components ((:file "save-load"))
   :in-order-to ((test-op (test-op "tz-utilities/test/save-load"))))
 
@@ -37,7 +35,7 @@
   :components ((:file "tests/test")))
 
 (asdf:defsystem #:tz-utilities/test/save-load
-  :depends-on (tz-utilities fiasco)
+  :depends-on (tz-utilities/save-load fiasco)
   :perform (test-op (o s)
                     (uiop:symbol-call :fiasco '#:run-package-tests :package 'tz-utilities-tests-save-load))
   :components ((:file "tests/save-load")))
