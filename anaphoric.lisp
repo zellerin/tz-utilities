@@ -3,7 +3,7 @@
 (define-section @anaphoric
     "Anaphoric macros not defined in the Let-over-lambda package."
   (awhen)
-  (it local-variable))
+  (it symbol))
 
 (defmacro awhen (test-form &body body)
   "Evaluate TEST-FORM, and if true, evaluate BODY with symbol IT bound to its

@@ -142,13 +142,15 @@ Three operations on alists when they are used as key-value DB need to be defined
 
 ** Random stuff
 #+BEGIN: lisp-fns-doc :section tz-utilities::@anaphoric :package tz-utilities
-Anaphoric macros not defined in the lol package
+Anaphoric macros not defined in the Let-over-lambda package.
 
 - =AWHEN= (function)
    Evaluate TEST-FORM, and if true, evaluate BODY with symbol IT bound to its
    value.
 
    Lambda list: ~TEST-FORM~ ~&BODY~ ~BODY~
+
+- =IT= (symbol)
 
 
 #+END:
