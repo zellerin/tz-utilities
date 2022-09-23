@@ -6,8 +6,7 @@
   (extract-tags) (extract-tags-from-list)
   (fill-template)
   (fill-template*)
-  (json-based-simple class)
-  (json-to-html-dl))
+  (json-based-simple class))
 
 (defun extract-tags (alist tag-specs)
   "Extracts values in the ALIST matching keys in TAG-SPECS, optionally applying a
@@ -15,12 +14,13 @@ function specified in TAG-SPECS.
 
 TAG-SPECS is a list where each element is either a KEY or list (KEY FN).
 
-Maybe LET-ALIST is more natural interface in many cases.
-
 Example:
 : (extract-tags '((:foo . 1) (:bar 2) (:baz 3)) '(:baz (:foo 1-)))
 gives
 : ((3) 0)
+
+
+Maybe LET-ALIST is more natural interface in many cases.
 
 Not optimized for speed:
 - iterates tags-specs twice
@@ -47,13 +47,19 @@ Not optimized for speed:
 	(mapcar (lambda (a fn) (funcall fn (assocd a found))) tags fns)))))
 
 (defun extract-tags-from-list (tags data)
+  "EXTRACT-TAGS on each item in list DATA."
      (mapcar (alexandria:rcurry #'extract-tags tags)  data))
 
 (defun fill-template (template keys-values)
   "Fill a template suitable for json with values.
 
 Return a copy of template with each cons that starts with a KEY from
-KEYS-VALUES plist has its cdr replaced with the appropriate VALUE."
+KEYS-VALUES plist has its cdr replaced with the appropriate VALUE.
+
+Example:
+: (fill-template '(Here is a (:value \"To be filled\"))  ((:value 42)))
+gives
+: (HERE IS A (:VALUE . 42))"
   (if (consp template)
       (cond ((and (keywordp (car template))
 		  (getf keys-values (car template)))
@@ -65,38 +71,35 @@ KEYS-VALUES plist has its cdr replaced with the appropriate VALUE."
     template))
 
 (defun fill-template* (template &rest keys-values)
+  "Same as FILL-TEMPLATE, but with KEYS-VALUES as call parameters."
   (fill-template template keys-values))
-
-
-;;;; Json to HTML
-(defun json-to-html-dl (json out)
-  "Format json as a HTML definition list"
-  (cl-who:with-html-output (out)
-    (:dl
-     (dolist (item json)
-       (cl-who:htm
-	(:dt (cl-who:esc (substitute #\Space #\- (string-capitalize (symbol-name (car item))))))
-	(let ((val (format nil "~a" (or (cdr item) "Empty"))))
-	  (cl-who:htm
-	   (:dd
-	    (if (position #\NewLine val)
-		(cl-who:htm
-		 (:pre
-		  (cl-who:esc val)))
-		(cl-who:esc val))))))))))
-
-
 
 
 ;;;; Classes to json
 (defclass json-based-simple ()
-  ((slot-map :accessor get-slot-map :initarg :slot-map)
-   (json     :accessor get-json     :initarg :json))
+  ()
   (:documentation
-   "A class that can be initiated from JSON data. There is one additional slot, mappings, that maps json path and slot names."))
+   "A class that can be initiated from JSON data. There are two additional initargs,
+:slot-map and :json, that maps json path and slot name. Each of keywords in SLOT-MAP is
+sought by ALIST in the JSON and if present, both are added to the initargs.
 
-(defmethod shared-initialize :after ((object json-based-simple) objects &key json &allow-other-keys)
-  (when (get-json object)
-    (dolist (map (slot-value object 'slot-map))
-      (when (assoc (cdr map) json)
-	(setf (slot-value object (car map)) (assocd (cdr map) json))))))
+The JSON can be also a slot, of course. And :SLOT-MAP can be in the default-initargs.
+
+Example: define a derived class,
+: (defclass json-example (json-based-simple)
+:  ((foo :accessor get-foo :initarg :foo)
+:   (bar :accessor get-bar :initarg :bar)))
+
+and then use
+: (make-instance 'json-example :slot-map
+:      '(:foo :bar) :json '(:foo 12))"))
+
+(defmethod shared-initialize :around ((object json-based-simple) objects &rest pars
+                                      &key json slot-map)
+  (apply #'call-next-method object objects
+         (append pars
+                 (loop for item in slot-map
+                       for assoc = (assoc item json)
+                       when assoc
+                       collect item
+                       and collect (cdr assoc)))))

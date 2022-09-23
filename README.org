@@ -255,21 +255,33 @@ Typical sequence is
 
 
 ** JS tools
-#+BEGIN: lisp-fns-doc :section web-tools::@js-tools :package web-tools
+#+BEGIN: lisp-fns-doc :section tz-utilities::@js-tools :package tz-utilities
 Function on lists that facilitate work with json data after parsing
-  them with cl-json.
+  them with cl-json. See also LET-ALIST.
 
 - =EXTRACT-TAGS= (function)
-   Extract cdrs of forms with car in tags.
+   Extracts values in the ALIST matching keys in TAG-SPECS, optionally applying a
+   function specified in TAG-SPECS.
+
+   TAG-SPECS is a list where each element is either a KEY or list (KEY FN).
+
+   Example:
+   : (extract-tags '((:foo . 1) (:bar 2) (:baz 3)) '(:baz (:foo 1-)))
+   gives
+   : ((3) 0)
+
+
+   Maybe LET-ALIST is more natural interface in many cases.
 
    Not optimized for speed:
-   - iterates tags twice
+   - iterates tags-specs twice
    - conses a lot
-   - etc
+   - etc.
 
-   Lambda list: ~FORM~ ~TAG-SPECS~
+   Lambda list: ~ALIST~ ~TAG-SPECS~
 
 - =EXTRACT-TAGS-FROM-LIST= (function)
+   EXTRACT-TAGS on each item in list DATA.
 
    Lambda list: ~TAGS~ ~DATA~
 
@@ -279,21 +291,35 @@ Function on lists that facilitate work with json data after parsing
    Return a copy of template with each cons that starts with a KEY from
    KEYS-VALUES plist has its cdr replaced with the appropriate VALUE.
 
+   Example:
+   : (fill-template '(Here is a (:value "To be filled"))  ((:value 42)))
+   gives
+   : (HERE IS A (:VALUE . 42))
+
    Lambda list: ~TEMPLATE~ ~KEYS-VALUES~
 
 - =FILL-TEMPLATE*= (function)
+   Same as FILL-TEMPLATE, but with KEYS-VALUES as call parameters.
 
    Lambda list: ~TEMPLATE~ ~&REST~ ~KEYS-VALUES~
 
 - =JSON-BASED-SIMPLE= (class)
-   A class that can be initiated from JSON data. There is one additional slot, mappings, that maps json path and slot names.
+   A class that can be initiated from JSON data. There are two additional initargs,
+   :slot-map and :json, that maps json path and slot name. Each of keywords in SLOT-MAP is
+   sought by ALIST in the JSON and if present, both are added to the initargs.
+
+   The JSON can be also a slot, of course. And :SLOT-MAP can be in the default-initargs.
+
+   Example: define a derived class,
+   : (defclass json-example (json-based-simple)
+   :  ((foo :accessor get-foo :initarg :foo)
+   :   (bar :accessor get-bar :initarg :bar)))
+
+   and then use
+   : (make-instance 'json-example :slot-map
+   :      '(:foo :bar) :json '(:foo 12))
 
      Superclasses: (STANDARD-OBJECT)
-
-- =JSON-TO-HTML-DL= (function)
-   Format json as a HTML definition list
-
-   Lambda list: ~JSON~ ~OUT~
 
 
 #+END:

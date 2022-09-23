@@ -121,6 +121,23 @@
       (is (null (muffled-load))))))
 
 ;;; json
+
+(defclass json-example (json-based-simple)
+  ((foo :accessor get-foo :initarg :foo)
+   (bar :accessor get-bar :initarg :bar)))
+
+(defclass json-example2 (json-based-simple named-json)
+  ((foo :accessor get-foo :initarg :foo)
+   (bar :accessor get-bar :initarg :bar)))
+
 (deftest json ()
   (is (equalp (extract-tags '((:foo . 1) (:bar 2) (:baz 3)) '(:baz (:foo 1-)))
-              '((3) 0))))
+              '((3) 0)))
+  (is (equalp (fill-template '(Here is a (:value :fill-me))  '(:value 42))
+              '(HERE IS A (:VALUE . 42))))
+  (let ((json-object
+          (make-instance 'json-example
+                         :slot-map '(:foo :bar)
+                         :json '((:foo . 12)))))
+    (is (equal (get-foo json-object) 12))
+    (is (null (slot-boundp json-object 'bar)))))
