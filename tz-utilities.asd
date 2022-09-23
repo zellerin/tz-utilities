@@ -16,6 +16,7 @@
 	       (:file "cached-vars")
 	       (:file "anaphoric")
                (:file "time")
+               (:file "json")
                (:file "save-load"))
   :in-order-to ((test-op (test-op "tz-utilities/test"))))
 

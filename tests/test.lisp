@@ -119,3 +119,8 @@
       (is (= saved-value (load-value "random-test")))
       (delete-store-files)
       (is (null (muffled-load))))))
+
+;;; json
+(deftest json ()
+  (is (equalp (extract-tags '((:foo . 1) (:bar 2) (:baz 3)) '(:baz (:foo 1-)))
+              '((3) 0))))
