@@ -1,5 +1,11 @@
 (in-package #:tz-utilities)
 
+(define-section @debugger-hooks
+  "MAKE-CASCADED-DEBUGGER-HOOK is used to add additional handler cases for current repl.
+
+This is probably not good idea to use and fully experimental."
+  (make-cascaded-debugger-hook macro))
+
 (defmacro make-cascaded-debugger-hook (cases)
   "A function suitable for the debugger hook that checks CASES (same format as in
  handler-case) and if none matches, runs whatever was the hook when it was called.

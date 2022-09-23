@@ -63,7 +63,8 @@ Two backends are in place: authinfo files, and secret service API.
    Store already found secrets in a cache and try to retrieve from cache before
    other storate is tried.
 
-   Raise condition SECRET-NOT-FOUND if relevant secret is not found; it has established restart USE-VALUE
+   Raise condition SECRET-NOT-FOUND if relevant secret is not found; it has
+   established restart USE-VALUE that sets the secret in cache as well.
 
    Lambda list: ~MACHINE~ ~USERNAME~
 
@@ -75,8 +76,8 @@ Two backends are in place: authinfo files, and secret service API.
 
    Lambda list: ~MACHINE~
 
-- =*AUTHINFO-FILE*= (variable)
-   Authinfo file to search secrets in.
+- =*AUTHINFO-FILES*= (variable)
+   Authinfo files to search secrets in.
 
 - =SECRET-NOT-FOUND= (condition)
    Condition thrown when no relevant secret is found.
@@ -160,7 +161,7 @@ MAKE-CASCADED-DEBUGGER-HOOK is used to add additional handler cases for current 
 
 This is probably not good idea to use and fully experimental.
 
-- =MAKE-CASCADED-DEBUGGER-HOOK= (function)
+- =MAKE-CASCADED-DEBUGGER-HOOK= (macro)
    A function suitable for the debugger hook that checks CASES (same format as in
     handler-case) and if none matches, runs whatever was the hook when it was called.
 
@@ -179,10 +180,13 @@ Time related utilities. The baseline and convention is the LOCAL-TIME package.
 - =TOMORROW= (function)
    Timestamp of Nth day in future (0 being tomorrow) 00:00.
 
-   Lambda list: ~&OPTIONAL~ ~(N 0)~
+   Lambda list: ~&OPTIONAL~ ~(N 0)~ ~(BASE (NOW))~
 
 - =*ORG-TIME-FORMAT*= (variable)
    Format of timestamp used by Org mode.
+
+- =LOCAL-TIME= (readtable)
+   @ reads timestring, #@ universal time.
 
 
 #+END:
@@ -205,6 +209,8 @@ LET form. This turns out to be quite a serious problem.
    Lambda list: ~NAME~ ~VALUE~ ~&OPTIONAL~ ~COMMENT~
 
 - =FORGET-CACHED= (function)
+   Forget value of cached variable, if it was already evaluated. This causes
+   re-evaluation next time it is used.
 
    Lambda list: ~VISIBLE-NAME~
 

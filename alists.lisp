@@ -52,7 +52,7 @@ update ALIST with KEY and evaluate NEW-VAL-CODE as new VALUE."
   "Return body, or it cached value. Caching is done on current and
 cached KEYs being same; keyword parameters KEY and TEST can modify
 what same means.
-o
+
 The cache is implemented as an alist, so should be small to keep efficiency."
   `(let ((cache (load-time-value (cons nil nil))))
      (get-or-update-alist ((cdr cache) ,key ,@pars-test)
