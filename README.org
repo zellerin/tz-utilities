@@ -323,3 +323,30 @@ Function on lists that facilitate work with json data after parsing
 
 
 #+END:
+
+** Symbols
+#+BEGIN: lisp-fns-doc :section tz-utilities::@symbols :package tz-utilities
+To generate variables in other languages from symbols, I need to convert
+dash-separated-words used in lisp into camelCase.
+
+- =SYMBOL-TO-CAMELCASE= (function)
+   Generate camelcase name string from symbol. See `PRINT-SYMBOL-CAMELIZED' for
+     details.
+
+   Lambda list: ~SYMBOL~ ~&OPTIONAL~ ~CAPITALIZE-FIRST~
+
+- =PRINT-SYMBOL-CAMELIZED= (function)
+   Print to OUT stream a lisp SYMBOL converted to camelcase notation this way:
+
+   - The letter after dash is capitalized.
+   - Two dashes make dash and next letter capitalized.
+   - First letter is capital if CAPITALIZE-FIRST is set.
+
+   The function is meant to be used in format; here, CAPITALIZE-FIRST corresponds
+   to the colon.
+
+   Lambda list: ~OUT~ ~SYMBOL~ ~&OPTIONAL~ ~CAPITALIZE-FIRST~ ~AT-SIGN~
+                ~PREFIX~ ~&REST~ ~ARGS~
+
+
+#+END:

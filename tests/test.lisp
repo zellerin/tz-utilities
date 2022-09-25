@@ -141,3 +141,12 @@
                          :json '((:foo . 12)))))
     (is (equal (get-foo json-object) 12))
     (is (null (slot-boundp json-object 'bar)))))
+
+
+(deftest test-symbols ()
+  (is (string-equal
+       "fooBar"
+       (symbol-to-camelcase 'foo-bar)))
+  (is (string-equal
+       "FooBar"
+       (symbol-to-camelcase 'foo-bar t))))

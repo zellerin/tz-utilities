@@ -17,6 +17,7 @@
 	       (:file "anaphoric")
                (:file "time")
                (:file "json")
+               (:file "symbols")
                (:file "save-load"))
   :in-order-to ((test-op (test-op "tz-utilities/test"))))
 
