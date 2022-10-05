@@ -94,12 +94,10 @@ and then use
 : (make-instance 'json-example :slot-map
 :      '(:foo :bar) :json '(:foo 12))"))
 
-(defmethod shared-initialize :around ((object json-based-simple) objects &rest pars
-                                      &key json slot-map)
-  (apply #'call-next-method object objects
+(defmethod shared-initialize :around ((object json-based-simple) slot-names &rest pars
+                                      &key json &allow-other-keys)
+  (apply #'call-next-method object slot-names
          (append pars
-                 (loop for item in slot-map
-                       for assoc = (assoc item json)
-                       when assoc
-                       collect item
-                       and collect (cdr assoc)))))
+                 (loop for item in json
+                       collect (car item)
+                       collect (cdr item)))))
