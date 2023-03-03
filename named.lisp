@@ -48,9 +48,12 @@ contains, among other, name/display name of the object.")))
     (princ (get-name o) stream)))
 
 (defun make-json-object (json class
-			 &key (name-keyword :name)
-			   (name-fn (assocd-for name-keyword)))
+			 &rest pars
+                         &key (name-keyword :name)
+			   (name-fn (assocd-for name-keyword))
+                           &allow-other-keys)
   "Make instance of an object backed by an alist. Typically, sets name based on
 the value associated with NAME-KEYWORD, but another function to extract name can
 be specified with NAMED-FN."
-  (make-instance class :json json :name (funcall name-fn json)))
+  (apply 'make-instance class :json json :name (funcall name-fn json)
+         pars))
