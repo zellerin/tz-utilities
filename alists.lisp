@@ -65,6 +65,11 @@ The cache is implemented as an alist, so should be small to keep efficiency."
 FIXME: this must be in some standard library, but I can't find it."
   (cdr (apply #'assoc item alist pars)))
 
+(defun safe-assocd (item alist &rest pars)
+  "Convenience shortcut for (cdr (assoc ...)), also known as alist-get in elisp.
+FIXME: this must be in some standard library, but I can't find it."
+  (apply #'assocd item (remove-if-not 'consp alist) pars))
+
 (defun assocd-for (key &rest pars)
   "Function of one parameter (an alist) that extracts KEY from that alist"
   (lambda (item) (apply #'assocd key item pars)))
