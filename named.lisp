@@ -10,7 +10,8 @@ alists obtained from cl-json:decode-json calls"
   (get-name generic-fn)
   (no-name condition)
   (named-json class)
-  (make-json-object))
+  (make-json-object)
+  (make-json-objects))
 
 (define-condition no-name (serious-condition)
   ()
@@ -51,9 +52,16 @@ contains, among other, name/display name of the object.")))
 			 &rest pars
                          &key (name-keyword :name)
 			   (name-fn (assocd-for name-keyword))
-                           &allow-other-keys)
+                         &allow-other-keys)
   "Make instance of an object backed by an alist. Typically, sets name based on
 the value associated with NAME-KEYWORD, but another function to extract name can
 be specified with NAMED-FN."
   (apply 'make-instance class :json json :name (funcall name-fn json)
-         pars))
+         (loop for (key val) on pars by 'cddr
+               unless (member key '(:name-keword :name-fn))
+                 collect key and collect val)))
+
+(defun make-json-objects (list-of-json &rest pars)
+  ;; this version of curry is not standard
+  (mapcar (lambda (a) (apply #'make-json-object a pars))
+          list-of-json))
