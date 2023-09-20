@@ -7,7 +7,7 @@
   :license  "Specify license here"
   :version "0.1"
   :serial t
-  :depends-on (cz.zellerin.doc cl-store let-over-lambda local-time secret-service)
+  :depends-on (mgl-pax cl-store let-over-lambda local-time secret-service)
   :components ((:file "package")
                (:file "alists")
                (:file "debugger")

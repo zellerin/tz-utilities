@@ -1,6 +1,7 @@
 (in-package #:tz-utilities)
 
-(define-section @cached-vars
+(defsection @cached-vars
+    (:title "Cached variables")
   "To prevent long loading times, allow variables to be initialized dynamically -
 the initialing form is stored at load time, and evaluated when the form is
 used.
@@ -9,8 +10,8 @@ The \"variable\" symbol is expanded to a form \"(read-cached symbol)\".
 
 Not that the illusion of VAR being really variable breaks when it is used in a
 LET form. This turns out to be quite a serious problem."
-  (define-cached-var macro)
-  (forget-cached))
+  (define-cached-var mgl-pax:macro)
+  (forget-cached function))
 
 (defstruct (cache
 	    (:print-object (lambda (object stream)

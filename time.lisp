@@ -1,11 +1,12 @@
 (in-package tz-utilities)
 
-(define-section @time-tools
+(defsection @time-tools
+  (:title "Time tools")
   "Time related utilities. The baseline and convention is the LOCAL-TIME package."
-  (tomorrow)
+  (tomorrow function)
   (*org-time-format* variable)
   (local-time readtable)
-  (day-before))
+  (day-before function))
 
 (named-readtables:defreadtable local-time
   "@ reads timestring, #@ universal time."

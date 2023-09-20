@@ -1,13 +1,22 @@
 (in-package #:tz-utilities)
 
-(define-section @authinfo
+(defsection @authinfo
+    (:title "Access to secrets")
   "Utilities to retrieve passwords from safer storage.
 
-The idea is not to have passwords (and possibly relared configuration objects -
+The idea is not to have passwords (and possibly related configuration objects -
 names, etc) in the code, but elsewhere, and ask for them when needed in a simple way.
 
-Two backends are in place: authinfo files, and secret service API."
-  (get-authinfo) (get-authinfo-both)
+Two backends are in place: authinfo files (internally implemented, to be
+deprecated), and secret service API, using [SECRET-SERVICE][ss] implementation.
+
+In addition this provides caching of the credentials
+
+[ss]: https://github.com/zellerin/secret-service/"
+  "TODO: is caching still needed/useful?"
+  "TODO: Packages - link to documentation or source github?"
+  (get-authinfo function)
+  (get-authinfo-both function)
   (*authinfo-files* variable)
   (secret-not-found condition))
 
@@ -81,11 +90,15 @@ established restart USE-VALUE that sets the secret in cache as well."
       :interactive (lambda ()
 		     (format *query-io* "Password for ~a on ~a: " username machine)
 		     (list (read-line *query-io*)))
-      (setf (gethash (cons machine username) *authinfo-cache*) new-pwd))))
+      (setf (gethash (cons machine username) *authinfo-cache*) new-pwd))
+    ;; TODO: allow store value. Hooks preferred again. SS invocation is
+    #+nil (secret-service:create-item "/org/freedesktop/secrets/collection/login" "Test secret"
+                   '(("machine" "xxx") ("login" "api")) "xxx")
+    ))
 
 (defun get-authinfo-both (machine)
   "Get user and secret for MACHINE.
 
 Store already found secrets in a cache and try to retrieve from cache before
-other storate is tried."
+other storage is tried."
   (get-authinfo machine nil))

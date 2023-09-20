@@ -1,18 +1,20 @@
 (in-package #:tz-utilities)
 
-(define-section @alist-utilities
-  "Add-hoc utilities for alist management.
+(defsection @alist-utilities
+    (:title "Alist utilities")
+ "Add-hoc utilities for alist management.
 
 Three operations on alists when they are used as key-value DB need to be defined:
 - getting the value for key or nil (assocd),
 - updating value for the key, unconditionally (update-alist)
 - getting the value and updating it if it does not exist (get-or-update-alist)"
-  (assocd) (assocd-for)
-  (clist-to-llist)
+  (assocd function)
+  (assocd-for function)
+  (clist-to-llist function)
   (get-or-update-alist macro)
   (with-small-cache macro)
-  (prune-alist)
-  (update-alist modify-macro))
+  (prune-alist function)
+  (update-alist macro))
 
 (defun get-or-acons-alist* (alist key new-val-fn assoc-pars)
   "Get value associated with KEY in ALIST, or create record for KEY with value being funcalled NEW-VAL-FN.

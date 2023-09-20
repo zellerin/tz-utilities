@@ -1,11 +1,13 @@
 (in-package tz-utilities)
 
-(define-section @js-tools
+(defsection @js-tools
+    ()
   "Function on lists that facilitate work with json data after parsing
   them with cl-json. See also LET-ALIST."
-  (extract-tags) (extract-tags-from-list)
-  (fill-template)
-  (fill-template*)
+  (extract-tags function)
+  (extract-tags-from-list function)
+  (fill-template function)
+  (fill-template* function)
   (json-based-simple class))
 
 (defun extract-tags (alist tag-specs)

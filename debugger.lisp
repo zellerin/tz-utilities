@@ -1,6 +1,7 @@
 (in-package #:tz-utilities)
 
-(define-section @debugger-hooks
+(defsection @debugger-hooks
+    ()
   "MAKE-CASCADED-DEBUGGER-HOOK is used to add additional handler cases for current repl.
 
 This is probably not good idea to use and fully experimental."

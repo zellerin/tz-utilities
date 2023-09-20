@@ -1,9 +1,10 @@
 (in-package tz-utilities)
 
-(define-section @anaphoric
-    "Anaphoric macros not defined in the Let-over-lambda package."
-  (awhen)
-  (it symbol))
+(defsection @anaphoric
+    (:title "Anaphoric macros")
+  "Anaphoric macros not defined in the Let-over-lambda package."
+  (awhen macro)
+  (it variable))
 
 (defmacro awhen (test-form &body body)
   "Evaluate TEST-FORM, and if true, evaluate BODY with symbol IT bound to its

@@ -1,17 +1,18 @@
 (in-package tz-utilities)
 
-(define-section @named-objects
+(defsection @named-objects
+    (:title "Named objects")
   "Class NAMED streamlines creating \"printable\" named class instances.
 
 Class NAMED-JSON allows easier handling and pretty-printing of alist
 objects. Word JSON in name is probably a bad one, but this is what I use it for:
 alists obtained from cl-json:decode-json calls"
   (named class)
-  (get-name generic-fn)
+  (get-name generic-function)
   (no-name condition)
   (named-json class)
-  (make-json-object)
-  (make-json-objects))
+  (make-json-object function)
+  (make-json-objects function))
 
 (define-condition no-name (serious-condition)
   ()

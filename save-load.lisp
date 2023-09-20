@@ -1,6 +1,7 @@
 (in-package #:tz-utilities)
 
-(define-section @save-load
+(defsection @save-load
+    ()
   "To preserve relatively stable data across run of the system, the
 actual values of the variables can be saved and then loaded on
 startup (or anytime else).
@@ -12,14 +13,15 @@ provided string and timestamp; loading is done from the most recent
 The background mechanism for storing is cl-store.
 
 Typical sequence is
-
-: (defvar *A-VARIABLE* (load-value \"foo\"))
-: ...
-: ;;; some long calculation to update *A-VARIABLE*
-: ...
-: (save-value *A-VARIABLE* \"foo\")"
-  (save-value)
-  (load-value)
+```
+(defvar *A-VARIABLE* (load-value \"foo\"))
+...
+;;; some long calculation to update *A-VARIABLE*
+...
+(save-value *A-VARIABLE* \"foo\")
+```"
+  (save-value function)
+  (load-value function)
   (*default-cache-path* variable))
 
 (defvar *default-cache-path* "~/.cache/lisp/"
