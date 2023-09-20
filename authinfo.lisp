@@ -7,14 +7,16 @@
 The idea is not to have passwords (and possibly related configuration objects -
 names, etc) in the code, but elsewhere, and ask for them when needed in a simple way.
 
-Two backends are in place: authinfo files (internally implemented, to be
-deprecated), and secret service API, using [SECRET-SERVICE][ss] implementation.
+Two backends are in place: [netrc/authinfo][ai] files (internally implemented backed, deprecated), and secret service API, using [SECRET-SERVICE][ss] implementation.
 
 In addition this provides caching of the credentials
 
-[ss]: https://github.com/zellerin/secret-service/"
+[ss]: ../secret-service/
+[ai]: https://www.gnu.org/software/emacs/manual/html_node/auth/Help-for-users.html"
   "TODO: is caching still needed/useful?"
   "TODO: Packages - link to documentation or source github?"
+  "TODO: Emacs now supports pass - should I as well?"
+  "TODO: On multiple matching passwords offer restarts for each (unless there is too much)"
   (get-authinfo function)
   (get-authinfo-both function)
   (*authinfo-files* variable)

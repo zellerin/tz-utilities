@@ -10,8 +10,13 @@
 
 (defsection @overview
     (:title "Overview")
-  "This is a random collection of utilities that were not yet extracted to separate
-systems.")
+  "The system contains utilities that I needed in multiple projects that
+
+* I did not find in public repositories and
+* are so small that they do not deserve separate package/repository
+
+Not cleaned up and mostly not tested, so probably will not work for you as-is.
+")
 
 (defsection @index
     ()
